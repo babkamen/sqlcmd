@@ -29,7 +29,7 @@ public class Controller {
             }else if(command.startsWith("input:")){
             insertToTable();
             }else if(command.startsWith("select:")){
-            showTable();
+            showTable(command);
             }else if(command.startsWith("clearrow:")){
             clear();
             }else if (command.equals("edit")){
@@ -66,9 +66,8 @@ public class Controller {
         manager.delete(id);
     }
 
-    private void showTable() {
-        String parameter=view.read();
-        String[] parameters=parameter.split(":");
+    private void showTable(String command) {
+        String[] parameters=command.split(":");
         if(parameters.length!=2){
             throw new IllegalArgumentException("not enough parameters to connect, current value " +parameters.length);
         }
