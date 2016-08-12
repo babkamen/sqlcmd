@@ -1,5 +1,6 @@
-package com.bonnenuit.controler;
+package com.bonnenuit;
 
+import com.bonnenuit.controler.Controller;
 import com.bonnenuit.model.DatabaseManager;
 import com.bonnenuit.view.Console;
 import com.bonnenuit.view.View;
