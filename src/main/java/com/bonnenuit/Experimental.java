@@ -1,4 +1,4 @@
-package model;
+package com.bonnenuit;
 
 import java.sql.*;
 

@@ -1,4 +1,4 @@
-package view;
+package com.bonnenuit.view;
 
 import java.util.Scanner;
 

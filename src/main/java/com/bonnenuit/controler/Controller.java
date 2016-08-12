@@ -1,7 +1,7 @@
-package controler;
+package com.bonnenuit.controler;
 
-import model.DatabaseManager;
-import view.View;
+import com.bonnenuit.model.DatabaseManager;
+import com.bonnenuit.view.View;
 
 /**
  * Created by Rostyslav on 09/08/16.
@@ -9,17 +9,22 @@ import view.View;
 public class Controller {
     private View view;
     private DatabaseManager manager;
-    public Controller(View view, DatabaseManager manager){
+    private boolean forever;
+    public Controller(View view, DatabaseManager manager,boolean forever){
         this.view = view;
         this.manager = manager;
+        this.forever = forever;
     }
-    public void controllerRunner(){
-        System.out.println("Input parameters to connect like these databasename:username:password");
 
-        connectToDb();
+    public void controllerRunner(){
+        System.out.println("Input parameters to connect like these url:username:password. \nFor example localhost:5432:root:pass");
+
+        if(!manager.connected()) {
+            connectToDb();
+        }
 
         System.out.println("Input command or \"help\" to show info.");
-        while(true){
+        do{
 
             String command = view.read();
             if(command.equals("help")){
@@ -38,10 +43,10 @@ public class Controller {
                 System.exit(1);
             }else{
                 System.out.println("Such command does not exist!\n" +
-                        "Try \"help\" to view info...");
+                        "Try \"help\" to com.bonnenuit.view info...");
 
             }
-        }
+        }while (forever);
     }
 
     private void edit() {
@@ -76,7 +81,6 @@ public class Controller {
     }
 
     private void insertToTable() {
-        while(true){
             String parameter=view.read();
             String[] parameters=parameter.split(":");
             if(parameters.length!=4){
@@ -86,24 +90,19 @@ public class Controller {
             String user=parameters[2];
             String password=parameters[3];
             manager.insert(tableName,user,password);
-            break;
-        }
     }
 
     public void connectToDb(){
-       boolean flag=true;
-        while(flag){
         String parameter=view.read();
             String[] parameters=parameter.split(":");
-            if(parameters.length!=3) {
+            if(parameters.length!=4) {
                 throw new IllegalArgumentException("not enough parameters to connect, current value" + parameters.length);
             }
-            String database=parameters[0];
-            String user=parameters[1];
-            String password=parameters[2];
-            manager.connect(database,user,password);
-            flag=false;}
-        }
+            String url=parameters[0]+":"+parameters[1];
+            String user=parameters[2];
+            String password=parameters[3];
+            manager.connect(url,user,password);
+    }
 
     public void help(){
     System.out.println("\"tablelist\" - show tables list \n " +

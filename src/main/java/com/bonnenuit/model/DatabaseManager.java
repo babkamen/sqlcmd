@@ -1,4 +1,4 @@
-package model;
+package com.bonnenuit.model;
 
 import java.sql.*;
 
@@ -11,26 +11,35 @@ public class DatabaseManager {
     ResultSet rs;
     PreparedStatement ps;
 
-    public void connect(String database, String user, String password) {
+    public boolean connected(){
+        return connection!=null;
+    }
+
+    public void connect(String url, String user, String password) {
+        loadDriver();
+        try {
+            connection = DriverManager.getConnection(
+                    "jdbc:postgresql://"+url , user,
+                    password);
+            System.out.println("Conection done!");
+            System.out.println("Hello "+user+"!");
+        } catch (SQLException e) {
+            System.out.println(String.format("Cant get connection for url:%s user:%s", url, user));
+            e.printStackTrace();
+            connection = null;
+        }
+    }
+
+    private void loadDriver() {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             System.out.println("Please add jdbc jar to project.");
             e.printStackTrace();
         }
-        try {
-            connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/" + database, user,
-                    password);
-            System.out.println("Conection done!");
-            System.out.println("Hello "+user+"!");
-        } catch (SQLException e) {
-            System.out.println(String.format("Cant get connection for database:%s user:%s", database, user));
-            e.printStackTrace();
-            connection = null;
-        }
     }
-           public void showDb(){
+
+    public void showDb(){
            try {
                stmt = connection.createStatement();
                rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public'" +
